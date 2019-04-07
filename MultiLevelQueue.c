@@ -66,13 +66,14 @@ void fcfs_sort(struct process *q,int n_size)
 }
 void fcfs()
 {
+	printf("First Come First Serve running");
 	int i,sum=0;
-	int first_burst=0;
-	int *wt=(int*)malloc(index[0]*sizeof(int));
+	int *wt=(int*)malloc(3*sizeof(int));
 	fcfs_sort(queue1,index[0]);
+	int first_burst=queue1[0].burst;
 	for(i=0;i<index[0];i++)
 	{
-		//printf("")
+		printf("\n");
 		if(i==0)
 		{
 			printf("Process of id%d\n",queue1[i].p_id);
@@ -83,7 +84,7 @@ void fcfs()
 		}
 		else
 		{
-			printf("Process of id%d\n",queue1[i].p_id);
+			printf("Process of id:%d\n",queue1[i].p_id);
 			printf("Turn around time:%d\n",first_burst);
 			printf("waiting time:%d\n",first_burst-queue1[i].burst);
 			wt[i]=first_burst-queue1[i].burst;
@@ -94,9 +95,82 @@ void fcfs()
 	{
 		sum+=wt[i];
 	}
-	printf("Average Waiting Time:%d\n",sum);
+	printf("Average Waiting Time:%d\n",sum/3);
 	
 }
+
+
+void prio_sort(struct process *q,int n_size)
+{
+	int i,j;
+	struct process t;
+	for(i=0;i<n_size;i++)
+	{
+		for(j=0;j<n_size-1-i;j++)
+		{
+			if(q[j].priority>q[j+1].priority)
+			{
+				t=q[j];
+				q[j]=q[j+1];
+				q[j+1]=t;
+			}	
+		}
+	}
+	int min=q[0].arrival;
+	for(i=0;i<n_size;i++)
+	{
+		if(q[i].arrival<min)
+		{
+			min=q[i].arrival;
+			j=i;
+		}
+	}
+	t=q[j];
+	q[0]=q[j];
+	q[j]=t;
+}
+
+void priority()
+{
+	int i,j,k;
+	struct process *temp=(struct process *)malloc(n*sizeof(struct process));
+	struct process *newq=(struct process *)malloc(n*sizeof(struct process));
+	struct process *wqueue=(struct process *)malloc(n*sizeof(struct process));
+	prio_sort(queue2,index[1]);
+	for(i=0;i<index[1];i++)
+	{
+		temp[0]=queue2[i];
+		for(j=0;j<temp[0].burst;j++)
+		{
+			
+			for(k=0;k<index[1];k++)
+			{
+				if(newq!=NULL&&newq[r].priority<=temp[0].priority)
+				{
+					wqueue[w]=temp[0];
+					w++;
+					temp[0]=newq[r];
+				}
+				if(temp[0].arrival<queue2[k].arrival)
+				{
+					temp[0].burst-=abs(queue2[k].arrival-temp[0].arrival);
+					if(temp[0].burst>0)
+					{ 
+						newq[l]=temp[0];
+						l++;
+					}
+					temp[0]=queue2[k];
+				}
+				else
+				{
+					wqueue[w]=queue2[k];
+					w++;
+				}
+			}
+		}
+	}
+}
+
 main()
 {
 	enter();
